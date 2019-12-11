@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		778F35BE23A19BC500419DBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35BD23A19BC500419DBB /* AppDelegate.swift */; };
 		778F35C023A19BC500419DBB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35BF23A19BC500419DBB /* SceneDelegate.swift */; };
-		778F35C223A19BC500419DBB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35C123A19BC500419DBB /* ViewController.swift */; };
+		778F35C223A19BC500419DBB /* PinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35C123A19BC500419DBB /* PinViewController.swift */; };
 		778F35C523A19BC500419DBB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 778F35C323A19BC500419DBB /* Main.storyboard */; };
 		778F35C823A19BC500419DBB /* Tourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 778F35C623A19BC500419DBB /* Tourist.xcdatamodeld */; };
 		778F35CA23A19BC600419DBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 778F35C923A19BC600419DBB /* Assets.xcassets */; };
@@ -20,7 +20,7 @@
 		778F35BA23A19BC500419DBB /* Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		778F35BD23A19BC500419DBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		778F35BF23A19BC500419DBB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		778F35C123A19BC500419DBB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		778F35C123A19BC500419DBB /* PinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewController.swift; sourceTree = "<group>"; };
 		778F35C423A19BC500419DBB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		778F35C723A19BC500419DBB /* Tourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tourist.xcdatamodel; sourceTree = "<group>"; };
 		778F35C923A19BC600419DBB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -60,7 +60,7 @@
 			children = (
 				778F35BD23A19BC500419DBB /* AppDelegate.swift */,
 				778F35BF23A19BC500419DBB /* SceneDelegate.swift */,
-				778F35C123A19BC500419DBB /* ViewController.swift */,
+				778F35C123A19BC500419DBB /* PinViewController.swift */,
 				778F35C323A19BC500419DBB /* Main.storyboard */,
 				778F35C923A19BC600419DBB /* Assets.xcassets */,
 				778F35CB23A19BC600419DBB /* LaunchScreen.storyboard */,
@@ -141,7 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				778F35C223A19BC500419DBB /* ViewController.swift in Sources */,
+				778F35C223A19BC500419DBB /* PinViewController.swift in Sources */,
 				778F35BE23A19BC500419DBB /* AppDelegate.swift in Sources */,
 				778F35C823A19BC500419DBB /* Tourist.xcdatamodeld in Sources */,
 				778F35C023A19BC500419DBB /* SceneDelegate.swift in Sources */,
