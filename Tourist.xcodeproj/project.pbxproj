@@ -14,6 +14,7 @@
 		778F35C823A19BC500419DBB /* Tourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 778F35C623A19BC500419DBB /* Tourist.xcdatamodeld */; };
 		778F35CA23A19BC600419DBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 778F35C923A19BC600419DBB /* Assets.xcassets */; };
 		778F35CD23A19BC600419DBB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 778F35CB23A19BC600419DBB /* LaunchScreen.storyboard */; };
+		778F35D723A1B62A00419DBB /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35D623A1B62A00419DBB /* DataController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		778F35C923A19BC600419DBB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		778F35CC23A19BC600419DBB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		778F35CE23A19BC600419DBB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		778F35D623A1B62A00419DBB /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				778F35BF23A19BC500419DBB /* SceneDelegate.swift */,
 				778F35C123A19BC500419DBB /* PinViewController.swift */,
 				778F35C323A19BC500419DBB /* Main.storyboard */,
+				778F35D623A1B62A00419DBB /* DataController.swift */,
 				778F35C923A19BC600419DBB /* Assets.xcassets */,
 				778F35CB23A19BC600419DBB /* LaunchScreen.storyboard */,
 				778F35CE23A19BC600419DBB /* Info.plist */,
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				778F35D723A1B62A00419DBB /* DataController.swift in Sources */,
 				778F35C223A19BC500419DBB /* PinViewController.swift in Sources */,
 				778F35BE23A19BC500419DBB /* AppDelegate.swift in Sources */,
 				778F35C823A19BC500419DBB /* Tourist.xcdatamodeld in Sources */,
