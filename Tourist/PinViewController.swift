@@ -11,6 +11,10 @@ import MapKit
 class PinViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
+    
+    //we implicitly unwrap because we count on its dependency being injected by the AppDelegate
+    var dataController: DataController!
+    
     var isCentered = false
     var centerLocation = CLLocation(latitude: 32.787663, longitude: -96.806163)
     var regionRadius: CLLocationDistance = 100000
