@@ -12,10 +12,14 @@ import CoreData
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    // instantiating DataController property and passing in the model name
+    let dataController = DataController(modelName: "Tourist")
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        dataController.load{
+            // display user interface while waiting to load then switch to UI
+        }
         return true
     }
 
