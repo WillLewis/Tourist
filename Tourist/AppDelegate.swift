@@ -45,7 +45,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        saveViewContext()
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        saveViewContext()
+    }
+    
+    // MARK: Helper functions
+    func saveViewContext() {
+        try? dataController.viewContext.save()
+    }
 //    // MARK: - Core Data stack
 //
 //    lazy var persistentContainer: NSPersistentContainer = {
