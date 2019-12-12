@@ -76,7 +76,7 @@ extension DataController {
                 let nserror = error as NSError
                 fatalError("Unresolved error saving \(nserror), \(nserror.localizedDescription)")
             }
-        
+        }
         //call autosave after specified interval has elapsed
         DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
             self.autoSaveViewContext(interval: interval)
