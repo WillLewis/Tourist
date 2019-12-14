@@ -13,8 +13,10 @@ class PinViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    //we implicitly unwrap because we count on its dependency being injected by the AppDelegate
-    var dataController: DataController!
+    /// create an instance of the singleton
+    var context: NSManagedObjectContext {
+        return DataController.sharedInstance.viewContext
+    }
     
     
     //fetch gets the data were interested into a context we can access...must be configured with a type
@@ -36,11 +38,8 @@ class PinViewController: UIViewController, MKMapViewDelegate {
            
            //add this sort descriptor to the sort descriptor array
            fetchRequest.sortDescriptors = [sortDescriptor]
-           
-           let appDelegate = UIApplication.shared.delegate as! AppDelegate
-           dataController = appDelegate.dataController
         
-           fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+           fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
            fetchedResultsController.delegate = self
            
            do {
@@ -103,26 +102,24 @@ class PinViewController: UIViewController, MKMapViewDelegate {
     }
     
     @objc func handleLongPress(_ gestureRecognizer : UIGestureRecognizer){
-        //do not generate multiple pins during long press
+        /// do not generate multiple pins during long press
         if gestureRecognizer.state != .began { return }
         
-        //get coordinates of the long pressed point
+        /// get coordinates of the long pressed point
         let touchPoint = gestureRecognizer.location(in: mapView)
         
-        //convert location to CLLocationCorrdinate2D
+        /// convert location to CLLocationCorrdinate2D
         let touchMapCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         
-        //generate pins
+        /// generate pins
         let myPin: MKPointAnnotation = MKPointAnnotation()
         
-        //set the coordinate
+        // set the coordinate
         myPin.coordinate = touchMapCoordinate
         
-        //add pins to mapView
+        /// add pins to mapView
         self.mapView.addAnnotation(myPin)
         
-//        let album = Album(coordinate: touchMapCoordinate, context: sharedContext)
-//        mapView.addAnnotation(album)
     }
     
    
@@ -146,6 +143,10 @@ class PinViewController: UIViewController, MKMapViewDelegate {
 //MARK: FetchedResultsControllerDelegate
 extension PinViewController: NSFetchedResultsControllerDelegate {
     
+     //If below isnt necessary just replace with the only necessary method for change tracking to be enabled:
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+     }
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         guard let point = anObject as? Pin else {
             preconditionFailure("changes should be for map points")
@@ -159,13 +160,6 @@ extension PinViewController: NSFetchedResultsControllerDelegate {
             
         case .delete:
             self.mapView.removeAnnotation(pointAnnotation)
-        
-        case .update:
-            self.mapView.removeAnnotation(pointAnnotation)
-            self.mapView.addAnnotation(pointAnnotation)
-
-        case .move:
-            fatalError("Cant move point because of sort description.")
         
         default:
             break

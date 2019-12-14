@@ -13,51 +13,25 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-
-    // instantiating DataController property and passing in the model name
-    let dataController = DataController(modelName: "Tourist")
-    //var dataController: DataController!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    
-        dataController.load()
-
-        guard let navigationVC = window?.rootViewController as? UINavigationController else{
-            preconditionFailure("PinViewController not found")
-        }
-        
-        guard let pinVC = navigationVC.topViewController as? PinViewController else{
-            preconditionFailure("PinViewController not found")
-        }
-        
-        pinVC.dataController = dataController
-        
+        DataController.sharedInstance.load()
         return true
     }
 
-    // MARK: UISceneSession Lifecycle    
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-       
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-       
-    }
-    
     func applicationDidEnterBackground(_ application: UIApplication) {
         saveViewContext()
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-       
         saveViewContext()
     }
     
-    // MARK: Helper functions
     func saveViewContext() {
-        try? dataController.viewContext.save()
+        try? DataController.sharedInstance.viewContext.save()
     }
+    
+    
     // MARK: - Core Data stack
 
 //    lazy var persistentContainer: NSPersistentContainer = {
