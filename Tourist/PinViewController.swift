@@ -23,7 +23,33 @@ class PinViewController: UIViewController, MKMapViewDelegate {
     var isCentered = false
     var centerLocation = CLLocation(latitude: 32.787663, longitude: -96.806163)
     var regionRadius: CLLocationDistance = 100000
- 
+    
+    //MARK: Helper functions
+       fileprivate func setupFetchedResultsController() {
+           
+           /*this makes fetch request work witha a specific subclass and returns a new fetch request
+            initialized with that entity*/
+           let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+           
+           //configure the fetch request...with a sort rule
+           let sortDescriptor = NSSortDescriptor(key: "place", ascending: false)
+           
+           //add this sort descriptor to the sort descriptor array
+           fetchRequest.sortDescriptors = [sortDescriptor]
+           
+           let appDelegate = UIApplication.shared.delegate as! AppDelegate
+           dataController = appDelegate.dataController
+        
+           fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+           fetchedResultsController.delegate = self
+           
+           do {
+               try fetchedResultsController.performFetch()
+           } catch {
+               fatalError("The fetch could not be performed: \(error.localizedDescription)")
+           }
+       }
+    
     //MARK: Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -52,8 +78,8 @@ class PinViewController: UIViewController, MKMapViewDelegate {
         
         self.mapView.delegate = self
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        dataController = appDelegate.dataController
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        dataController = appDelegate.dataController
         
         self.reloadInputViews()
         setupFetchedResultsController()
@@ -99,28 +125,7 @@ class PinViewController: UIViewController, MKMapViewDelegate {
 //        mapView.addAnnotation(album)
     }
     
-    //MARK: Helper functions
-    fileprivate func setupFetchedResultsController() {
-        
-        /*this makes fetch request work witha a specific subclass and returns a new fetch request
-         initialized with that entity*/
-        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-        
-        //configure the fetch request...with a sort rule
-        let sortDescriptor = NSSortDescriptor(key: "place", ascending: false)
-        
-        //add this sort descriptor to the sort descriptor array
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-        fetchedResultsController.delegate = self
-        
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            fatalError("The fetch could not be performed: \(error.localizedDescription)")
-        }
-    }
+   
     // MARK: - MKMapViewDelegate
     // This delegate method is implemented to respond to taps. It opens the system browser
     // to the URL specified in the annotationViews subtitle property.

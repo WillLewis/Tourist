@@ -16,34 +16,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // instantiating DataController property and passing in the model name
     let dataController = DataController(modelName: "Tourist")
-
+    //var dataController: DataController!
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        dataController.load{
-            // display user interface while waiting to load then switch to UI
+    
+        dataController.load()
+
+        guard let navigationVC = window?.rootViewController as? UINavigationController else{
+            preconditionFailure("PinViewController not found")
         }
         
-        //configuring the first view
-        let navigationController = window?.rootViewController as! UINavigationController
+        guard let pinVC = navigationVC.topViewController as? PinViewController else{
+            preconditionFailure("PinViewController not found")
+        }
         
-        let pinViewController = navigationController.topViewController as! PinViewController
-        
-        pinViewController.dataController = dataController
+        pinVC.dataController = dataController
         
         return true
     }
 
     // MARK: UISceneSession Lifecycle    
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
+       
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+       
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -51,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+       
         saveViewContext()
     }
     
@@ -59,8 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func saveViewContext() {
         try? dataController.viewContext.save()
     }
-//    // MARK: - Core Data stack
-//
+    // MARK: - Core Data stack
+
 //    lazy var persistentContainer: NSPersistentContainer = {
 //        /*
 //         The persistent container for the application. This implementation
@@ -87,9 +86,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        })
 //        return container
 //    }()
-
-//     MARK: - Core Data Saving support
-
+//
+////     MARK: - Core Data Saving support
+//
 //    func saveContext () {
 //        let context = persistentContainer.viewContext
 //        if context.hasChanges {

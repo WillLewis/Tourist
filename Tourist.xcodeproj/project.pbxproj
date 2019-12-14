@@ -11,7 +11,6 @@
 		778F35C023A19BC500419DBB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35BF23A19BC500419DBB /* SceneDelegate.swift */; };
 		778F35C223A19BC500419DBB /* PinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35C123A19BC500419DBB /* PinViewController.swift */; };
 		778F35C523A19BC500419DBB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 778F35C323A19BC500419DBB /* Main.storyboard */; };
-		778F35C823A19BC500419DBB /* Tourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 778F35C623A19BC500419DBB /* Tourist.xcdatamodeld */; };
 		778F35CA23A19BC600419DBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 778F35C923A19BC600419DBB /* Assets.xcassets */; };
 		778F35CD23A19BC600419DBB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 778F35CB23A19BC600419DBB /* LaunchScreen.storyboard */; };
 		778F35D723A1B62A00419DBB /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F35D623A1B62A00419DBB /* DataController.swift */; };
@@ -25,7 +24,6 @@
 		778F35BF23A19BC500419DBB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		778F35C123A19BC500419DBB /* PinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewController.swift; sourceTree = "<group>"; };
 		778F35C423A19BC500419DBB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		778F35C723A19BC500419DBB /* Tourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tourist.xcdatamodel; sourceTree = "<group>"; };
 		778F35C923A19BC600419DBB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		778F35CC23A19BC600419DBB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		778F35CE23A19BC600419DBB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -75,7 +73,6 @@
 				778F35C923A19BC600419DBB /* Assets.xcassets */,
 				778F35CB23A19BC600419DBB /* LaunchScreen.storyboard */,
 				778F35CE23A19BC600419DBB /* Info.plist */,
-				778F35C623A19BC500419DBB /* Tourist.xcdatamodeld */,
 			);
 			path = Tourist;
 			sourceTree = "<group>";
@@ -170,7 +167,6 @@
 				778F35C223A19BC500419DBB /* PinViewController.swift in Sources */,
 				778F35DE23A1ED7C00419DBB /* Pin+Extensions.swift in Sources */,
 				778F35BE23A19BC500419DBB /* AppDelegate.swift in Sources */,
-				778F35C823A19BC500419DBB /* Tourist.xcdatamodeld in Sources */,
 				778F35DB23A1BD8500419DBB /* Tourist.xcdatamodeld in Sources */,
 				778F35C023A19BC500419DBB /* SceneDelegate.swift in Sources */,
 			);
@@ -372,16 +368,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		778F35C623A19BC500419DBB /* Tourist.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				778F35C723A19BC500419DBB /* Tourist.xcdatamodel */,
-			);
-			currentVersion = 778F35C723A19BC500419DBB /* Tourist.xcdatamodel */;
-			path = Tourist.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
 		778F35D923A1BD8500419DBB /* Tourist.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

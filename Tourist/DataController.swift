@@ -15,28 +15,33 @@ import Foundation
 import CoreData
 
 class DataController {
+   
     //1. hold persistent instance
-    let persistentContainer:NSPersistentContainer
+    let persistentContainer: NSPersistentContainer
      
     //3. A convenience property to access the containers view context
     //its a computed property
-    var viewContext:NSManagedObjectContext {
+    var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
-    
-    let backgroundContext:NSManagedObjectContext!
+    //FIXME: BackgroundContext
+    let backgroundContext: NSManagedObjectContext!
     
     //4. initializes persistence store and pass model name into its initializer
-    init(modelName:String) {
+    init(modelName: String) {
         persistentContainer = NSPersistentContainer(name: modelName)
+        
+        //FIXME: BackgroundContext2
         backgroundContext = persistentContainer.newBackgroundContext()
     }
     
     // handle merges if we edit our model
     func configureContexts() {
         viewContext.automaticallyMergesChangesFromParent = true
+        //FIXME: BackgroundContex3
         backgroundContext.automaticallyMergesChangesFromParent = true
         
+        //FIXME: BackgroundContext4
         backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
     }
