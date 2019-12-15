@@ -76,9 +76,8 @@ class PinViewController: UIViewController, MKMapViewDelegate {
         
         /// generate pins
         let pin = Pin(context: context)
-        //let myPin: MKPointAnnotation = MKPointAnnotation()
         
-        // set the coordinate
+        /// set the coordinate
         pin.coordinate = touchMapCoordinate
         
         /// add pins to mapView
