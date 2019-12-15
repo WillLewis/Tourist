@@ -119,16 +119,21 @@ class PinViewController: UIViewController, MKMapViewDelegate {
             mapView.addAnnotation(annotation)
         }
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ViewPhotos" {
+            let photoVC = segue.destination as! PhotoViewController
+            photoVC.pin = sender as? Pin
+            
+        }
+    }
     
     // MARK: - MKMapViewDelegate
     
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if control == view.rightCalloutAccessoryView {
-            
-            if let toOpen = view.annotation?.subtitle! {
-                UIApplication.shared.open(URL(string: toOpen)!)
-            }
-        }
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        let selectedPinAnnotation = mapView.selectedAnnotations.first as? Pin
+        let pin = fetchedResultsController.fetchedObjects?.filter { $0.isEqual(selectedPinAnnotation?.coordinate)}.first
+        
+        performSegue(withIdentifier: "ViewPhotos", sender: pin)
     }
     
     func centerMapOnLocation(location: CLLocation) {

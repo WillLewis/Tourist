@@ -26,7 +26,7 @@
                     <navigationItem key="navigationItem" id="fvH-Vp-eNj"/>
                     <connections>
                         <outlet property="mapView" destination="0OM-Si-cTn" id="oew-pL-fRw"/>
-                        <segue destination="Wcm-UC-fyi" kind="showDetail" id="Kzb-r1-IWg"/>
+                        <segue destination="Wcm-UC-fyi" kind="showDetail" identifier="ViewPhotos" id="Kzb-r1-IWg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -71,7 +71,7 @@
                                             </subviews>
                                         </scrollView>
                                         <cells>
-                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="WC4-yF-QXM" customClass="PhotoCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="WC4-yF-QXM" customClass="PhotoCollectionViewCell" customModule="Tourist" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
