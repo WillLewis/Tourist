@@ -7,17 +7,17 @@
 //
 
 import Foundation
-import CoreData
 import MapKit
 
 extension Pin {
     public var coordinate: CLLocationCoordinate2D {
-        guard let latitude = latitude, let longitude = longitude else{
-            return kCLLocationCoordinate2DInvalid
+        set {
+            latitude = newValue.latitude
+            longitude = newValue.longitude
+        }
+        get{
+            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         }
         
-        let latDegrees = CLLocationDegrees((latitude as NSString).doubleValue)
-        let longDegrees = CLLocationDegrees((longitude as NSString).doubleValue)
-        return CLLocationCoordinate2D(latitude: latDegrees, longitude: longDegrees)
     }
 }

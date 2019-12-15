@@ -32,10 +32,8 @@ class DataController {
             }
             /// kicks off initial autosave
             self.autoSaveViewContext()
-           
         }
     }
-    
 }
 
 // MARK: - Autosaving

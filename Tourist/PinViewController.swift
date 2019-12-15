@@ -18,7 +18,6 @@ class PinViewController: UIViewController, MKMapViewDelegate {
         return DataController.sharedInstance.viewContext
     }
     
-    
     //fetch gets the data were interested into a context we can access...must be configured with a type
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     
@@ -26,28 +25,6 @@ class PinViewController: UIViewController, MKMapViewDelegate {
     var centerLocation = CLLocation(latitude: 32.787663, longitude: -96.806163)
     var regionRadius: CLLocationDistance = 100000
     
-    //MARK: Helper functions
-       fileprivate func setupFetchedResultsController() {
-           
-           /*this makes fetch request work witha a specific subclass and returns a new fetch request
-            initialized with that entity*/
-           let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-           
-           //configure the fetch request...with a sort rule
-           let sortDescriptor = NSSortDescriptor(key: "place", ascending: false)
-           
-           //add this sort descriptor to the sort descriptor array
-           fetchRequest.sortDescriptors = [sortDescriptor]
-        
-           fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-           fetchedResultsController.delegate = self
-           
-           do {
-               try fetchedResultsController.performFetch()
-           } catch {
-               fatalError("The fetch could not be performed: \(error.localizedDescription)")
-           }
-       }
     
     //MARK: Lifecycle
     override func viewWillAppear(_ animated: Bool) {
@@ -57,31 +34,17 @@ class PinViewController: UIViewController, MKMapViewDelegate {
             self.navigationItem.title = "Virtual Tourist"
             let edit = UIBarButtonItem(title: "Edit" , style: .plain, target: self, action: #selector(self.edit))
             self.navigationItem.rightBarButtonItem = edit
-
-            self.mapView.delegate = self
             
-
             if self.isCentered{
                 self.centerMapOnLocation(location: self.centerLocation)
             }
             self.setupFetchedResultsController()
-            self.reloadInputViews()
+            //self.reloadInputViews()
         }
     }
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // FIXME:  Restore Map Region
-        //restoreMapRegion(true)
-        
-        self.mapView.delegate = self
-        
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        dataController = appDelegate.dataController
-        
-        self.reloadInputViews()
-        setupFetchedResultsController()
         mapView.setUserTrackingMode(.follow, animated: true)
         mapView.showsUserLocation = false
         
@@ -112,20 +75,54 @@ class PinViewController: UIViewController, MKMapViewDelegate {
         let touchMapCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         
         /// generate pins
-        let myPin: MKPointAnnotation = MKPointAnnotation()
+        let pin = Pin(context: context)
+        //let myPin: MKPointAnnotation = MKPointAnnotation()
         
         // set the coordinate
-        myPin.coordinate = touchMapCoordinate
+        pin.coordinate = touchMapCoordinate
         
         /// add pins to mapView
-        self.mapView.addAnnotation(myPin)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = pin.coordinate
+        mapView.addAnnotation(annotation)
         
+        try? context.save()
     }
     
-   
+   //MARK: Helper functions
+   fileprivate func setupFetchedResultsController() {
+    
+       let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+       
+       /// configure the fetch request...with a sort rule
+       let sortDescriptor = NSSortDescriptor(key: "place", ascending: false)
+       
+       /// add this sort descriptor to the sort descriptor array
+       fetchRequest.sortDescriptors = [sortDescriptor]
+    
+       fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+       fetchedResultsController.delegate = self
+       
+       do {
+           try fetchedResultsController.performFetch()
+           reloadPins()
+       } catch {
+           fatalError("The fetch could not be performed: \(error.localizedDescription)")
+       }
+   }
+    
+    func reloadPins() {
+        guard let pins = fetchedResultsController.fetchedObjects else { return }
+        
+        for pin in pins {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = pin.coordinate
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
     // MARK: - MKMapViewDelegate
-    // This delegate method is implemented to respond to taps. It opens the system browser
-    // to the URL specified in the annotationViews subtitle property.
+    
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
             
@@ -140,11 +137,12 @@ class PinViewController: UIViewController, MKMapViewDelegate {
             mapView.setRegion(coordinateRegion, animated: true)
     }
 }
+
 //MARK: FetchedResultsControllerDelegate
 extension PinViewController: NSFetchedResultsControllerDelegate {
     
-     //If below isnt necessary just replace with the only necessary method for change tracking to be enabled:
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        reloadPins()
      }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
