@@ -26,7 +26,7 @@
                     <navigationItem key="navigationItem" id="fvH-Vp-eNj"/>
                     <connections>
                         <outlet property="mapView" destination="0OM-Si-cTn" id="oew-pL-fRw"/>
-                        <segue destination="Wcm-UC-fyi" kind="showDetail" identifier="ViewPhotos" id="Kzb-r1-IWg"/>
+                        <segue destination="Wcm-UC-fyi" kind="show" identifier="ViewPhotos" id="Kzb-r1-IWg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -38,11 +38,11 @@
             <objects>
                 <viewController storyboardIdentifier="PhotoViewController" title="PhotoViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Wcm-UC-fyi" customClass="PhotoViewController" customModule="Tourist" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kFc-pQ-4Dc">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Md4-jX-TKe">
-                                <rect key="frame" x="0.0" y="-44" width="414" height="806"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="772"/>
                                 <subviews>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="wRh-4t-Rj9">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="223"/>
@@ -52,7 +52,7 @@
                                         <viewLayoutGuide key="safeArea" id="Gdd-0r-xrX"/>
                                     </mapView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="wPr-wY-fbs">
-                                        <rect key="frame" x="0.0" y="223" width="414" height="583"/>
+                                        <rect key="frame" x="0.0" y="223" width="414" height="549"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="IUG-Us-Agb">
                                             <size key="itemSize" width="113" height="105"/>
@@ -60,16 +60,6 @@
                                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
-                                        <scrollView key="backgroundView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" id="UfP-kX-Ngz">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="583"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <subviews>
-                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="1Lf-qB-1Er">
-                                                    <rect key="frame" x="197" y="349" width="20" height="20"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </activityIndicatorView>
-                                            </subviews>
-                                        </scrollView>
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="WC4-yF-QXM" customClass="PhotoCollectionViewCell" customModule="Tourist" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
@@ -81,6 +71,10 @@
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-zS-J4J">
                                                             <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
                                                         </imageView>
+                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="1Lf-qB-1Er">
+                                                            <rect key="frame" x="51" y="47" width="20" height="20"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </activityIndicatorView>
                                                     </subviews>
                                                 </view>
                                                 <constraints>
@@ -100,7 +94,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hQM-V4-6iF">
-                                <rect key="frame" x="0.0" y="771" width="414" height="71"/>
+                                <rect key="frame" x="0.0" y="859" width="414" height="37"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                 <state key="normal" title="New Collection"/>
@@ -119,11 +113,11 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="vX7-ta-KNQ"/>
                     </view>
+                    <navigationItem key="navigationItem" id="6lQ-Be-3Tw"/>
                     <connections>
                         <outlet property="activityIndicator" destination="1Lf-qB-1Er" id="Q5h-DA-nE3"/>
                         <outlet property="newPhotosButton" destination="hQM-V4-6iF" id="13b-Vf-g6I"/>
                         <outlet property="photoCollectionView" destination="wPr-wY-fbs" id="15H-y4-OrB"/>
-                        <outlet property="smallMapView" destination="wRh-4t-Rj9" id="00D-9J-f3P"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ADU-QD-qkY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

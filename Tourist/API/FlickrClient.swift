@@ -10,9 +10,6 @@ import Foundation
 
 class FlickrClient {
     
-    
-    
-    //class func searchByLocation(pin: Pin, completion: @escaping)
     class func getPhoto(photo: Photo, completion: @escaping (Data?, Error?) -> Void){
         guard let urlString = photo.url else {
             print("problem getting url for photo")
