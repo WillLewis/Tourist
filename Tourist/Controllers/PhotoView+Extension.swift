@@ -9,14 +9,4 @@
 import Foundation
 import UIKit
 
-extension PhotoViewController: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return frc.sections?[section].numberOfObjects ?? 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        return UICollectionViewCell
-    }
-}
+

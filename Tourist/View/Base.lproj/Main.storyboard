@@ -85,8 +85,9 @@
                                                 </constraints>
                                                 <size key="customSize" width="123" height="115"/>
                                                 <connections>
+                                                    <outlet property="activityIndicator" destination="1Lf-qB-1Er" id="ObO-ih-70A"/>
                                                     <outlet property="photo" destination="lAP-zS-J4J" id="zxo-fW-Yff"/>
-                                                    <outlet property="photoView" destination="lAP-zS-J4J" id="oot-j5-Ldk"/>
+                                                    <outlet property="photoView" destination="lAP-zS-J4J" id="UDD-dq-fRo"/>
                                                 </connections>
                                             </collectionViewCell>
                                         </cells>

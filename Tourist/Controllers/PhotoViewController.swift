@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate {
+class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetchedResultsControllerDelegate {
     
     var context: NSManagedObjectContext {
         return DataController.sharedInstance.viewContext
@@ -18,18 +18,18 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     var frc: NSFetchedResultsController<Photo>!
     var pin: Pin!
     
-    
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var photoCollectionView: UICollectionView!
+    @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var newPhotosButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //TODO: mapView.delegate = self
-        photoCollectionView.delegate = self
-        photoCollectionView.dataSource = self
+        mapView.delegate = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
         
     }
     
@@ -45,7 +45,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     @IBAction func tapNewCollection (_ sender: Any) {
-        if photoCollectionView.indexPathsForSelectedItems?.count == 0 {
+        if collectionView.indexPathsForSelectedItems?.count == 0 {
             downloadNewPhotos()
         } else {
             deleteSelectedPhoto()
@@ -91,13 +91,48 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     fileprivate func setCollectionFlowLayout() {
-        //TODO: configure collection layout
+        let space: CGFloat = 2.0
+        let dimension = (view.frame.size.width - (2 * space)) / 2.0
+        let dimension2 = (view.frame.size.width - (2 * space)) / 4.0
+        
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSize(width: dimension, height: dimension2)
     }
     
     //TODO: MapViewDelegate extension (see )
     //TODO: NSFetchedResultsControllerDelegate (see PVC)
     //TODO: controllerDidChangeContent (see PVC)
     //TODO: UICollectionViewDataSource
+}
+
+extension PhotoViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return frc.sections?[section].numberOfObjects ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
+        cell.activityIndicator.startAnimating()
+        let photo = frc.object(at: indexPath)
+        
+        guard let imageData = photo.image else{
+            FlickrClient.getPhoto(photo: photo) {(imageData, error) in
+                guard let imageData = imageData else {
+                    return
+                }
+                cell.photoView.image = UIImage(data: imageData)
+                }
+            cell.activityIndicator.stopAnimating()
+            return cell
+            
+        }
+        cell.photoView.image = UIImage(data: imageData)
+        cell.activityIndicator.stopAnimating()
+        return cell
+    }
+    
 }
 
 
