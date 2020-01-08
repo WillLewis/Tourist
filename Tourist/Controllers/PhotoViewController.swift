@@ -100,7 +100,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         flowLayout.itemSize = CGSize(width: dimension, height: dimension2)
     }
     
-    //TODO: MapViewDelegate extension (see )
+    
     //TODO: NSFetchedResultsControllerDelegate (see PVC)
     //TODO: controllerDidChangeContent (see PVC)
     //TODO: UICollectionViewDataSource
@@ -134,5 +134,27 @@ extension PhotoViewController: UICollectionViewDataSource {
     }
     
 }
+extension PhotoViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
 
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = .systemTeal
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            pinView!.annotation = annotation
+            pinView!.displayPriority = .required
+            
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+}
 
