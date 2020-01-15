@@ -27,6 +27,10 @@ class DataController {
    
     func load() {
         persistentContainer.loadPersistentStores { storeDescription, error in
+            
+            ///Avoid duplicating objects
+            self.persistentContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            
             guard error == nil else {
                 fatalError(error!.localizedDescription)
             }
