@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PinViewController: UIViewController, MKMapViewDelegate {
+class PinViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -17,8 +17,9 @@ class PinViewController: UIViewController, MKMapViewDelegate {
     var context: NSManagedObjectContext {
         return DataController.sharedInstance.viewContext
     }
+    var dataController: DataController!
     
-    //fetch gets the data were interested into a context we can access...must be configured with a type
+    ///fetch gets the data were interested into a context we can access...must be configured with a type
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     
     var isCentered = false
@@ -45,6 +46,7 @@ class PinViewController: UIViewController, MKMapViewDelegate {
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         mapView.setUserTrackingMode(.follow, animated: true)
         mapView.showsUserLocation = false
         
@@ -122,13 +124,14 @@ class PinViewController: UIViewController, MKMapViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ViewPhotos" {
             let photoVC = segue.destination as! PhotoViewController
+            photoVC.dataController = dataController
             photoVC.pin = sender as? Pin
             
         }
     }
-    
+}
     // MARK: - MKMapViewDelegate
-    
+extension PinViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         let selectedPinAnnotation = mapView.selectedAnnotations.first as? Pin
         let pin = fetchedResultsController.fetchedObjects?.filter { $0.isEqual(selectedPinAnnotation?.coordinate)}.first

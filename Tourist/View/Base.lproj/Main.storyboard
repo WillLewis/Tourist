@@ -116,9 +116,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="6lQ-Be-3Tw"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="1Lf-qB-1Er" id="Q5h-DA-nE3"/>
+                        <outlet property="collectionView" destination="wPr-wY-fbs" id="f9R-Ci-uHY"/>
+                        <outlet property="flowLayout" destination="IUG-Us-Agb" id="r2w-fr-BKg"/>
+                        <outlet property="mapView" destination="wRh-4t-Rj9" id="qik-jx-9sJ"/>
                         <outlet property="newPhotosButton" destination="hQM-V4-6iF" id="13b-Vf-g6I"/>
-                        <outlet property="photoCollectionView" destination="wPr-wY-fbs" id="15H-y4-OrB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ADU-QD-qkY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

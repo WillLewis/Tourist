@@ -15,6 +15,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     var context: NSManagedObjectContext {
         return DataController.sharedInstance.viewContext
     }
+    var dataController: DataController!
     var frc: NSFetchedResultsController<Photo>!
     var pin: Pin!
     
@@ -24,16 +25,19 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
+    
     ///TODO: @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var newPhotosButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        mapView.delegate = self
-        //collectionView.delegate = self
-        //collectionView.dataSource = self
+        //mapView.delegate = self
+        setupFetchedResultsController()
         setupCollectionView()
+        setupMap()
+        collectionView.delegate = self
+        //collectionView.dataSource = self
         
         
     }
@@ -74,15 +78,59 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         fetchRequest.sortDescriptors = [sortDescriptor]
         frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
-        
+        performFetch()
+    }
+    
+    func downloadPhotos () {
+        if let photos = frc.fetchedObjects {
+            photos.forEach { context.delete($0)}
+        }
+        saveContext()
+        FlickrClient.getPhotosByLocation(pin: pin) { (flickrResponse, error) in
+            if let response = flickrResponse {
+                self.pin.pages = Int16(response.photos.pages)
+                self.pin.photos = self.createPhotos(result: response.photos, pin: self.pin) as NSSet?
+                self.saveContext()
+            } else{
+                print("Error creating photos for pin")
+            }
+        }
+    }
+    
+    func createPhotos(result: FlickrPhotos, pin: Pin) -> Set<Photo>? {
+    var photos = Set<Photo>()
+        if result.photo.isEmpty {
+            return nil
+        }
+        result.photo.forEach { flickrPhoto in
+            let photo = Photo(context: dataController.viewContext)
+            photo.id = flickrPhoto.id
+            photo.url = flickrPhoto.url
+            photo.pinlocation = pin
+            photos.insert(photo)
+        }
+        saveContext()
+        return photos
+    }
+    
+    fileprivate func performFetch(){
         do {
             try frc.performFetch()
             updateSnapshot()
-            
         } catch {
+            print(error.localizedDescription)
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
     }
+    
+    fileprivate func saveContext() {
+        do {
+            try dataController.viewContext.save()
+        } catch {
+            fatalError("The save Context could not be performed: \(error.localizedDescription)")
+        }
+    }
+    
     
     fileprivate func setupMap(){
         let lat = CLLocationDegrees(pin.latitude)
@@ -93,13 +141,17 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         
         mapView.addAnnotation(annotation)
         //TODO: configure the map region and delta
-        
     }
-    //diffableDataSource = UICollectionViewDiffableDataSource<Int, Photo>
     
+    //MARK: NSFetchedResultsControllerDelegate
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        updateSnapshot()
+    }
+    
+    //MARK: Diffable Data Source
     fileprivate func setupCollectionView(){
         diffableDataSource = UICollectionViewDiffableDataSource<Int,Photo> (collectionView: collectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, photo: Photo) -> UICollectionViewCell in
+            (collectionView: UICollectionView, indexPath: IndexPath, photo: Photo) -> UICollectionViewCell? in
             
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell else {fatalError("Cannot create new cell")}
             ///TODO: cell.activityIndicator.startAnimating()
@@ -127,7 +179,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         diffableSnapshot.appendSections([0])
         diffableSnapshot.appendItems(frc.fetchedObjects ?? [])
         diffableDataSource?.apply(self.diffableSnapshot)
-        
+        print("Snapshot updated")
     }
     
     func setCollectionFlowLayout() {
@@ -142,11 +194,10 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
 }
 
     
-    //TODO: NSFetchedResultsControllerDelegate (see PVC)
+    
     //TODO: Check Struct conformation to Hashable
 
 extension PhotoViewController: MKMapViewDelegate {
-    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
     
         let reuseId = "pin"
@@ -168,3 +219,4 @@ extension PhotoViewController: MKMapViewDelegate {
         return pinView
     }
 }
+
