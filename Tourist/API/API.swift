@@ -31,7 +31,7 @@ struct API {
         static let Format = "json"
         static let NoJSONCallback = "1"
         static let PerPage = "20"
-        static let Extras = "url_m"
+        static let Extras = "url_n"
     }
     
 }

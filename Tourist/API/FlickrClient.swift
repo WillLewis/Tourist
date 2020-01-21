@@ -32,8 +32,9 @@ class FlickrClient {
         let pageLimit = min(pin.pages, 40)
         let pageConstrained = max(pageLimit, 1)
         let randomPage = Int(arc4random_uniform(UInt32(pageConstrained))) + 1
+        print("the random page is \(randomPage)")
         
-        guard let url = buildPhotoURL(lat: pin.latitude, lon: pin.longitude, page: randomPage, pages: Int(pin.pages)) else {
+        guard let url = buildPhotoURL(lat: pin.latitude, lon: pin.longitude, page: randomPage, pages: Int(pin.pages))  else {
             print("problems building url")
             return
         }
@@ -45,6 +46,8 @@ class FlickrClient {
                 completion(nil, error)
             }
         }
+     print("the photo url is \(url)")
+        
     }
     class func taskForGetRequest<ResponseType: Decodable>(url: URL, response: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) {
         

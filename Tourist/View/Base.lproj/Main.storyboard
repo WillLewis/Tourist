@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="q2o-b9-iE7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="q2o-b9-iE7">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -50,6 +50,9 @@
                                             <constraint firstAttribute="height" constant="223" id="guP-OH-AeP"/>
                                         </constraints>
                                         <viewLayoutGuide key="safeArea" id="Gdd-0r-xrX"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="Wcm-UC-fyi" id="SZQ-JJ-j85"/>
+                                        </connections>
                                     </mapView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="wPr-wY-fbs">
                                         <rect key="frame" x="0.0" y="223" width="414" height="549"/>
@@ -61,7 +64,7 @@
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
                                         <cells>
-                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="WC4-yF-QXM" customClass="PhotoCollectionViewCell" customModule="Tourist" customModuleProvider="target">
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="WC4-yF-QXM" customClass="PhotoCell" customModule="Tourist" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -71,26 +74,30 @@
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-zS-J4J">
                                                             <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
                                                         </imageView>
-                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="1Lf-qB-1Er">
+                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="1Lf-qB-1Er">
                                                             <rect key="frame" x="51" y="47" width="20" height="20"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </activityIndicatorView>
                                                     </subviews>
                                                 </view>
                                                 <constraints>
+                                                    <constraint firstItem="1Lf-qB-1Er" firstAttribute="leading" secondItem="WC4-yF-QXM" secondAttribute="leadingMargin" constant="43" id="5OT-CF-ZSS"/>
                                                     <constraint firstItem="lAP-zS-J4J" firstAttribute="centerX" secondItem="WC4-yF-QXM" secondAttribute="centerX" id="C7g-ce-4qX"/>
                                                     <constraint firstItem="lAP-zS-J4J" firstAttribute="centerY" secondItem="WC4-yF-QXM" secondAttribute="centerY" id="cQ3-IQ-LJM"/>
+                                                    <constraint firstItem="lAP-zS-J4J" firstAttribute="centerX" secondItem="1Lf-qB-1Er" secondAttribute="centerX" id="ei9-5W-c7V"/>
+                                                    <constraint firstItem="lAP-zS-J4J" firstAttribute="centerY" secondItem="1Lf-qB-1Er" secondAttribute="centerY" id="ezr-CL-YTn"/>
                                                     <constraint firstItem="lAP-zS-J4J" firstAttribute="top" secondItem="WC4-yF-QXM" secondAttribute="topMargin" constant="-8" id="hm3-vm-Dmx"/>
+                                                    <constraint firstItem="1Lf-qB-1Er" firstAttribute="top" secondItem="WC4-yF-QXM" secondAttribute="topMargin" constant="39" id="jFy-F9-i3N"/>
                                                     <constraint firstItem="lAP-zS-J4J" firstAttribute="leading" secondItem="WC4-yF-QXM" secondAttribute="leadingMargin" constant="-8" id="neW-kI-B5V"/>
                                                 </constraints>
                                                 <size key="customSize" width="123" height="115"/>
                                                 <connections>
-                                                    <outlet property="activityIndicator" destination="1Lf-qB-1Er" id="ObO-ih-70A"/>
-                                                    <outlet property="photo" destination="lAP-zS-J4J" id="zxo-fW-Yff"/>
-                                                    <outlet property="photoView" destination="lAP-zS-J4J" id="UDD-dq-fRo"/>
+                                                    <outlet property="photoView" destination="lAP-zS-J4J" id="1ZJ-vx-ZSg"/>
                                                 </connections>
                                             </collectionViewCell>
                                         </cells>
+                                        <connections>
+                                            <outlet property="delegate" destination="Wcm-UC-fyi" id="84z-OX-O4R"/>
+                                        </connections>
                                     </collectionView>
                                 </subviews>
                             </stackView>

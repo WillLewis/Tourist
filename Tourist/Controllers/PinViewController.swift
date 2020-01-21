@@ -21,6 +21,7 @@ class PinViewController: UIViewController {
     
     ///fetch gets the data were interested into a context we can access...must be configured with a type
     var fetchedResultsController: NSFetchedResultsController<Pin>!
+    var pinnedLocation: Pin!
     
     var isCentered = false
     var centerLocation = CLLocation(latitude: 32.787663, longitude: -96.806163)
@@ -46,9 +47,11 @@ class PinViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         mapView.delegate = self
         mapView.setUserTrackingMode(.follow, animated: true)
         mapView.showsUserLocation = false
+        setupFetchedResultsController()
         
         //initialize a long press gesture recognizer
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(PinViewController.handleLongPress(_:)))
@@ -78,25 +81,65 @@ class PinViewController: UIViewController {
         
         /// generate pins
         let pin = Pin(context: context)
-        
-        /// set the coordinate
         pin.coordinate = touchMapCoordinate
+        pin.latitude = touchMapCoordinate.latitude
+        pin.longitude = touchMapCoordinate.longitude
         
         /// add pins to mapView
         let annotation = MKPointAnnotation()
         annotation.coordinate = pin.coordinate
         mapView.addAnnotation(annotation)
         
+        createPhotosForPin(pin: pin)
         try? context.save()
     }
     
    //MARK: Helper functions
+    fileprivate func createPhotosForPin(pin: Pin){
+        FlickrClient.getPhotosByLocation(pin: pin) {(flickrResponse, error) in
+            if let response = flickrResponse {
+                pin.pages = Int32(response.photos.pages)
+                pin.photos = self.configurePhotoSet(result: response.photos, pin: pin) as NSSet?
+                self.saveContext()
+            } else {
+                print("Error creating photos for pin \(error?.localizedDescription)")
+            }
+        }
+    }
+    fileprivate func configurePhotoSet(result: FlickrPhotos, pin: Pin) -> Set<Photo>? {
+    var photos = Set<Photo>()
+        if result.photo.isEmpty {
+            return nil
+        }
+        result.photo.forEach { flickrPhoto in
+            let photo = Photo(context: context)
+            photo.id = flickrPhoto.id
+            photo.url = flickrPhoto.url
+            photo.title = flickrPhoto.title
+            photo.pin = pin
+            photos.insert(photo)
+        }
+        saveContext()
+        return photos
+    }
+    
+    fileprivate func saveContext() {
+        do {
+            try context.save()
+        } catch {
+            let nserror = error as NSError
+            fatalError("Save cant be performed \(nserror), \(nserror.userInfo), \(error.localizedDescription)")
+        }
+    }
+        
+        
+    
    fileprivate func setupFetchedResultsController() {
     
        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
        
        /// configure the fetch request...with a sort rule
-       let sortDescriptor = NSSortDescriptor(key: "place", ascending: false)
+       let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
        
        /// add this sort descriptor to the sort descriptor array
        fetchRequest.sortDescriptors = [sortDescriptor]
@@ -125,7 +168,9 @@ class PinViewController: UIViewController {
         if segue.identifier == "ViewPhotos" {
             let photoVC = segue.destination as! PhotoViewController
             photoVC.dataController = dataController
-            photoVC.pin = sender as? Pin
+            guard let pinnedLocation = sender as? Pin else { return }
+            photoVC.pin = pinnedLocation
+            
             
         }
     }
@@ -133,10 +178,24 @@ class PinViewController: UIViewController {
     // MARK: - MKMapViewDelegate
 extension PinViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        /*
         let selectedPinAnnotation = mapView.selectedAnnotations.first as? Pin
         let pin = fetchedResultsController.fetchedObjects?.filter { $0.isEqual(selectedPinAnnotation?.coordinate)}.first
-        
-        performSegue(withIdentifier: "ViewPhotos", sender: pin)
+         
+         print(selectedPinAnnotation?.coordinate ?? "no coordinate for selected pin")
+         performSegue(withIdentifier: "ViewPhotos", sender: pin)
+        */
+        guard let pins = fetchedResultsController.fetchedObjects else {
+            print("no fetch pins")
+            return
+        }
+        if let coordinate = view.annotation?.coordinate, let selectedPinAnnotation = pins.first(where: {$0.latitude == coordinate.latitude && $0.longitude == coordinate.longitude}) {
+            
+            pinnedLocation = selectedPinAnnotation
+            print("the pinnned location is")
+            print(pinnedLocation.coordinate)
+            performSegue(withIdentifier: "ViewPhotos", sender: self)
+        }
     }
     
     func centerMapOnLocation(location: CLLocation) {
