@@ -26,23 +26,28 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     
-    ///TODO:@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    ///TODO: @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var newPhotosButton: UIButton!
     
+    //MARK: Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         mapView.delegate = self
         collectionView.delegate = self
+        ///TODO: test removing collcectionview data source to see if data changes when returning to the  pin view controller
         collectionView.dataSource = self as? UICollectionViewDataSource
+        collectionView.allowsMultipleSelection = true
         setupFetchedResultsController()
         setupCollectionView()
         setupMap()
         setCollectionFlowLayout()
+        reloadPin()
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        mapView.delegate = self
         setupFetchedResultsController()
         setupMap()
     }
@@ -53,6 +58,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         frc = nil
     }
     
+    //MARK: UI Methods
     ///TODO: Fix this
     @IBAction func tapNewCollection (_ sender: Any) {
         if collectionView.indexPathsForSelectedItems?.count == 0 {
@@ -72,16 +78,19 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         //TODO: add code for deleting
         
     }
-    //MARK: Helper functions
-    fileprivate func setupFetchedResultsController() {
-        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "id", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-        frc.delegate = self
-        performFetch()
+    
+    func setCollectionFlowLayout() {
+        let space: CGFloat = 3.0
+        let dimension = (view.frame.size.width - (2 * space)) / 3.0
+        let dimension2 = (view.frame.size.width - (2 * space)) / 3.0
+        
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSize(width: dimension, height: dimension2)
+        print("collection flow layout set")
     }
     
+    //MARK: Photo Data Model Methods
     func downloadPhotos () {
         if let photos = frc.fetchedObjects {
             photos.forEach { context.delete($0)}
@@ -135,6 +144,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         }
     }
     
+    //MARK: Map Data Model Methods
     
     fileprivate func setupMap(){
         guard let pin = pin else { return}
@@ -143,25 +153,36 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
-        
         let regionRadius:CLLocationDistance = 100000
-        
         let coordinateRegion = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
-
         mapView.setRegion(coordinateRegion, animated: false)
-        
         mapView.addAnnotation(annotation)
-        print("the location showing is")
-        print(annotation.coordinate)
-        //TODO: configure the map region and delta
+    }
+    
+    func reloadPin() {
+        guard let pin = pin else { return }
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = pin.coordinate
+        mapView.addAnnotation(annotation)
     }
     
     //MARK: NSFetchedResultsControllerDelegate
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         updateSnapshot()
     }
     
     //MARK: Diffable Data Source
+    
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "id", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        frc.delegate = self
+        performFetch()
+    }
+    
     fileprivate func setupCollectionView(){
         diffableDataSource = UICollectionViewDiffableDataSource.init(collectionView: collectionView, cellProvider: {collectionView, indexPath, photo in
         
@@ -201,22 +222,10 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         diffableDataSource?.apply(self.diffableSnapshot)
         print("Snapshot updated")
     }
-    
-    func setCollectionFlowLayout() {
-        let space: CGFloat = 3.0
-        let dimension = (view.frame.size.width - (2 * space)) / 3.0
-        let dimension2 = (view.frame.size.width - (2 * space)) / 3.0
-        
-        flowLayout.minimumInteritemSpacing = space
-        flowLayout.minimumLineSpacing = space
-        flowLayout.itemSize = CGSize(width: dimension, height: dimension2)
-        print("collection flow layout set")
-    }
-}
 
     
-    
-    //TODO: Check Struct conformation to Hashable
+}
+
 
 extension PhotoViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

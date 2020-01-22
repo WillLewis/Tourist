@@ -135,18 +135,12 @@ class PinViewController: UIViewController {
         
     
    fileprivate func setupFetchedResultsController() {
-    
        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-       
-       /// configure the fetch request...with a sort rule
        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
-       
-       /// add this sort descriptor to the sort descriptor array
        fetchRequest.sortDescriptors = [sortDescriptor]
-    
        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
        fetchedResultsController.delegate = self
-       
+    
        do {
            try fetchedResultsController.performFetch()
            reloadPins()
@@ -157,7 +151,6 @@ class PinViewController: UIViewController {
     
     func reloadPins() {
         guard let pins = fetchedResultsController.fetchedObjects else { return }
-        
         for pin in pins {
             let annotation = MKPointAnnotation()
             annotation.coordinate = pin.coordinate
@@ -168,10 +161,8 @@ class PinViewController: UIViewController {
         if segue.identifier == "ViewPhotos" {
             let photoVC = segue.destination as! PhotoViewController
             photoVC.dataController = dataController
-            guard let pinnedLocation = sender as? Pin else { return }
             photoVC.pin = pinnedLocation
-            
-            
+            //guard let pinnedLocation = sender as? Pin else { return }
         }
     }
 }
