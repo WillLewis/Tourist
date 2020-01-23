@@ -59,26 +59,33 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     }
     
     //MARK: UI Methods
-    ///TODO: Fix this
-    @IBAction func tapNewCollection (_ sender: Any) {
-        if collectionView.indexPathsForSelectedItems?.count == 0 {
-            downloadNewPhotos()
-        } else {
-            deleteSelectedPhoto()
-            //TODO: enable Delete Button
-        }
-    }
+
+    
     func downloadNewPhotos (){
         //TODO: add code for replacing  collection
         //Step1: delete existing collection
         //Step2: add new photos only if empty
     }
     
-    func deleteSelectedPhoto(){
-        //TODO: add code for deleting
-        
+
+    ///Delete functionality
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let config = UIContextMenuConfiguration(identifier:nil, previewProvider: nil) { _ in
+                let action = UIAction(title: "Delete") { _ in
+                    let d = self.diffableDataSource
+                    if let photoToDelete = d?.itemIdentifier(for: indexPath) {
+                        var snapshot = self.diffableDataSource?.snapshot()
+                        snapshot?.deleteItems([photoToDelete])
+                        self.diffableDataSource?.apply(snapshot!)
+                        print("deleted", photoToDelete)
+                    }
+                }
+                let menu = UIMenu(title: "", children: [action])
+                    return menu
+        }
+        return config
     }
-    
+
     func setCollectionFlowLayout() {
         let space: CGFloat = 3.0
         let dimension = (view.frame.size.width - (2 * space)) / 3.0

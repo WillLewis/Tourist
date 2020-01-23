@@ -65,17 +65,17 @@
                                         </collectionViewFlowLayout>
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="WC4-yF-QXM" customClass="PhotoCell" customModule="Tourist" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="112" height="112"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                                    <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="112" height="112"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-zS-J4J">
-                                                            <rect key="frame" x="0.0" y="0.0" width="123" height="115"/>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-zS-J4J">
+                                                            <rect key="frame" x="0.0" y="0.0" width="112" height="112"/>
                                                         </imageView>
-                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="1Lf-qB-1Er">
-                                                            <rect key="frame" x="51" y="47" width="20" height="20"/>
+                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="1Lf-qB-1Er">
+                                                            <rect key="frame" x="51" y="47" width="10" height="18"/>
                                                         </activityIndicatorView>
                                                     </subviews>
                                                 </view>
@@ -89,7 +89,7 @@
                                                     <constraint firstItem="1Lf-qB-1Er" firstAttribute="top" secondItem="WC4-yF-QXM" secondAttribute="topMargin" constant="39" id="jFy-F9-i3N"/>
                                                     <constraint firstItem="lAP-zS-J4J" firstAttribute="leading" secondItem="WC4-yF-QXM" secondAttribute="leadingMargin" constant="-8" id="neW-kI-B5V"/>
                                                 </constraints>
-                                                <size key="customSize" width="123" height="115"/>
+                                                <size key="customSize" width="112" height="112"/>
                                                 <connections>
                                                     <outlet property="photoView" destination="lAP-zS-J4J" id="1ZJ-vx-ZSg"/>
                                                 </connections>
