@@ -19,17 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        saveViewContext()
-    }
     
-    func applicationWillTerminate(_ application: UIApplication) {
-        saveViewContext()
-    }
-    
-    func saveViewContext() {
-        try? DataController.sharedInstance.viewContext.save()
-    }
     
     
     

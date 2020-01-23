@@ -57,17 +57,17 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     ///Delete functionality
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let config = UIContextMenuConfiguration(identifier:nil, previewProvider: nil) { _ in
-                let action = UIAction(title: "Delete") { _ in
-                    let d = self.diffableDataSource
-                    if let photoToDelete = d?.itemIdentifier(for: indexPath) {
-                        var snapshot = self.diffableDataSource?.snapshot()
-                        snapshot?.deleteItems([photoToDelete])
-                        self.diffableDataSource?.apply(snapshot!)
-                        print("deleted", photoToDelete)
-                    }
+            let action = UIAction(title: "Delete Picture") { _ in
+                let d = self.diffableDataSource
+                if let photoToDelete = d?.itemIdentifier(for: indexPath) {
+                    var snapshot = self.diffableDataSource?.snapshot()
+                    snapshot?.deleteItems([photoToDelete])
+                    self.diffableDataSource?.apply(snapshot!)
+                    print("deleted", photoToDelete)
                 }
-                let menu = UIMenu(title: "", children: [action])
-                    return menu
+            }
+            let menu = UIMenu(title: "", children: [action])
+            return menu
         }
         saveContext()
         return config
@@ -112,7 +112,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     func configurePhotoSet(result: FlickrPhotos, pin: Pin) -> Set<Photo>? {
         var photos = Set<Photo>()
         if result.photo.isEmpty {
-                return nil
+            return nil
         }
         result.photo.forEach { flickrPhoto in
             let photo = Photo(context: context)
@@ -186,9 +186,9 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     
     fileprivate func setupCollectionView(){
         diffableDataSource = UICollectionViewDiffableDataSource.init(collectionView: collectionView, cellProvider: {collectionView, indexPath, photo in
-        /*Alternative: diffableDataSource = UICollectionViewDiffableDataSource<Int,Photo> (collectionView: collectionView) {
-            (collectionView, indexPath, photo) -> UICollectionViewCell? in
-          */
+            /*Alternative: diffableDataSource = UICollectionViewDiffableDataSource<Int,Photo> (collectionView: collectionView) {
+             (collectionView, indexPath, photo) -> UICollectionViewCell? in
+             */
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell else {fatalError("Cannot create new cell")}
             
             cell.activityIndicator.hidesWhenStopped = true
@@ -200,13 +200,13 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
                     guard let imageData = imageData
                         
                         else {
-                        return
+                            return
                     }
                     cell.photoView.image = UIImage(data: imageData)
-                    }
-                
+                }
+                cell.activityIndicator.stopAnimating()
                 return cell
-            
+                
             }
             cell.photoView.image = UIImage(data: imageData)
             cell.activityIndicator.stopAnimating()
@@ -223,16 +223,16 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         diffableDataSource?.apply(self.diffableSnapshot)
         print("Snapshot updated")
     }
-
+    
     
 }
 
 extension PhotoViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-    
+        
         let reuseId = "pin"
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-
+        
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true

@@ -36,7 +36,7 @@ class PinViewController: UIViewController {
             self.setupFetchedResultsController()
         }
     }
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -71,7 +71,7 @@ class PinViewController: UIViewController {
         try? context.save()
     }
     
-   //MARK: Helper functions
+    //MARK: Helper functions
     fileprivate func createPhotosForPin(pin: Pin){
         FlickrClient.getPhotosByLocation(pin: pin) {(flickrResponse, error) in
             if let response = flickrResponse {
@@ -85,7 +85,7 @@ class PinViewController: UIViewController {
     }
     
     fileprivate func configurePhotoSet(result: FlickrPhotos, pin: Pin) -> Set<Photo>? {
-    var photos = Set<Photo>()
+        var photos = Set<Photo>()
         if result.photo.isEmpty {
             return nil
         }
@@ -109,21 +109,21 @@ class PinViewController: UIViewController {
             fatalError("Save cant be performed \(nserror), \(nserror.userInfo), \(error.localizedDescription)")
         }
     }
-        
-   fileprivate func setupFetchedResultsController() {
-       let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-       let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
-       fetchRequest.sortDescriptors = [sortDescriptor]
-       fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-       fetchedResultsController.delegate = self
     
-       do {
-           try fetchedResultsController.performFetch()
-           reloadPins()
-       } catch {
-           fatalError("The fetch could not be performed: \(error.localizedDescription)")
-       }
-   }
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+            reloadPins()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
     
     func reloadPins() {
         guard let pins = fetchedResultsController.fetchedObjects else { return }
@@ -146,7 +146,7 @@ class PinViewController: UIViewController {
         }
     }
 }
-    // MARK: - MKMapViewDelegate
+// MARK: - MKMapViewDelegate
 extension PinViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -155,21 +155,21 @@ extension PinViewController: MKMapViewDelegate {
             return
         }
         if let coordinate = view.annotation?.coordinate, let selectedPin = pins.first(where: {$0.latitude == coordinate.latitude && $0.longitude == coordinate.longitude}) {
-               pinnedLocation = selectedPin
-               performSegue(withIdentifier: "ViewPhotos", sender: self)
+            pinnedLocation = selectedPin
+            performSegue(withIdentifier: "ViewPhotos", sender: self)
         }
     }
     
     func centerMapOnLocation(location: CLLocation) {
         let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
-            mapView.setRegion(coordinateRegion, animated: true)
+        mapView.setRegion(coordinateRegion, animated: true)
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-    
+        
         let reuseId = "pin"
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-
+        
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
@@ -192,7 +192,7 @@ extension PinViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         reloadPins()
-     }
+    }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         guard let point = anObject as? Pin else {
@@ -207,7 +207,7 @@ extension PinViewController: NSFetchedResultsControllerDelegate {
             
         case .delete:
             self.mapView.removeAnnotation(pointAnnotation)
-        
+            
         default:
             break
         }
