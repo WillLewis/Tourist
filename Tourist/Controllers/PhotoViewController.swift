@@ -35,8 +35,6 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         mapView.delegate = self
         collectionView.delegate = self
         self.navigationController?.navigationBar.tintColor = UIColor.systemIndigo
-        ///TODO: test removing collcectionview data source to see if data changes when returning to the  pin view controller
-        //collectionView.dataSource = self as? UICollectionViewDataSource
         setupFetchedResultsController()
         setupCollectionView()
         setupMap()
@@ -229,10 +227,8 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
 
 extension PhotoViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
         let reuseId = "pin"
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-        
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
@@ -240,12 +236,10 @@ extension PhotoViewController: MKMapViewDelegate {
             pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
             pinView!.annotation = annotation
             pinView!.displayPriority = .required
-            
         }
         else {
             pinView!.annotation = annotation
         }
-        
         return pinView
     }
 }
