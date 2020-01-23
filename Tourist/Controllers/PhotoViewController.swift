@@ -25,9 +25,8 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
-    
-    ///TODO: @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var newPhotosButton: UIButton!
+    
     
     //MARK: Lifecycle Methods
     override func viewDidLoad() {
@@ -35,9 +34,9 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         
         mapView.delegate = self
         collectionView.delegate = self
+        self.navigationController?.navigationBar.tintColor = UIColor.systemIndigo
         ///TODO: test removing collcectionview data source to see if data changes when returning to the  pin view controller
         collectionView.dataSource = self as? UICollectionViewDataSource
-        collectionView.allowsMultipleSelection = true
         setupFetchedResultsController()
         setupCollectionView()
         setupMap()
@@ -52,22 +51,13 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         setupMap()
     }
     
-    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         frc = nil
     }
     
     //MARK: UI Methods
-
     
-    func downloadNewPhotos (){
-        //TODO: add code for replacing  collection
-        //Step1: delete existing collection
-        //Step2: add new photos only if empty
-    }
-    
-
     ///Delete functionality
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let config = UIContextMenuConfiguration(identifier:nil, previewProvider: nil) { _ in
@@ -83,9 +73,14 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
                 let menu = UIMenu(title: "", children: [action])
                     return menu
         }
+        saveContext()
         return config
+        
     }
-
+    @IBAction func newAlbumButton(_ sender: Any) {
+        downloadNewAlbum()
+    }
+    
     func setCollectionFlowLayout() {
         let space: CGFloat = 3.0
         let dimension = (view.frame.size.width - (2 * space)) / 3.0
@@ -98,11 +93,12 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     }
     
     //MARK: Photo Data Model Methods
-    func downloadPhotos () {
+    func downloadNewAlbum () {
         if let photos = frc.fetchedObjects {
             photos.forEach { context.delete($0)}
         }
         saveContext()
+        updateSnapshot()
         FlickrClient.getPhotosByLocation(pin: pin) { (flickrResponse, error) in
             if let response = flickrResponse {
                 self.pin.pages = Int32(response.photos.pages)
@@ -110,20 +106,23 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
                 self.saveContext()
                 self.updateSnapshot()
             } else{
-                print("Error creating photos for pin")
+                print("Error downloading new album")
             }
         }
+        saveContext()
+        updateSnapshot()
     }
     
     func configurePhotoSet(result: FlickrPhotos, pin: Pin) -> Set<Photo>? {
-    var photos = Set<Photo>()
+        var photos = Set<Photo>()
         if result.photo.isEmpty {
-            return nil
+                return nil
         }
         result.photo.forEach { flickrPhoto in
-            let photo = Photo(context: dataController.viewContext)
+            let photo = Photo(context: context)
             photo.id = flickrPhoto.id
             photo.url = flickrPhoto.url
+            photo.title = flickrPhoto.title
             photo.pin = pin
             photos.insert(photo)
         }
@@ -136,7 +135,6 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         do {
             try frc.performFetch()
             updateSnapshot()
-            print("perform fetch worked")
         } catch {
             print(error.localizedDescription)
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
@@ -145,7 +143,7 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     
     fileprivate func saveContext() {
         do {
-            try dataController.viewContext.save()
+            try context.save()
         } catch {
             fatalError("The save Context could not be performed: \(error.localizedDescription)")
         }
@@ -192,15 +190,13 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     
     fileprivate func setupCollectionView(){
         diffableDataSource = UICollectionViewDiffableDataSource.init(collectionView: collectionView, cellProvider: {collectionView, indexPath, photo in
-        
-        /*diffableDataSource = UICollectionViewDiffableDataSource<Int,Photo> (collectionView: collectionView) {
+        /*Alternative: diffableDataSource = UICollectionViewDiffableDataSource<Int,Photo> (collectionView: collectionView) {
             (collectionView, indexPath, photo) -> UICollectionViewCell? in
           */
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell else {fatalError("Cannot create new cell")}
         
-            ///TODO: cell.activityIndicator.startAnimating()
             let photo = self.frc.object(at: indexPath)
-            
+            cell.activityIndicator.startAnimating()
             guard let imageData = photo.image else{
                 FlickrClient.getPhoto(photo: photo) {(imageData, error) in
                     guard let imageData = imageData
@@ -210,16 +206,15 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
                     }
                     cell.photoView.image = UIImage(data: imageData)
                     }
-                ///TODO:cell.activityIndicator.stopAnimating()
-                print("collection view set")
+                cell.activityIndicator.stopAnimating()
                 return cell
             
             }
             cell.photoView.image = UIImage(data: imageData)
-            ///TODO:cell.activityIndicator.stopAnimating()
-            print("collection view set")
+            cell.activityIndicator.stopAnimating()
             return cell
         })
+        self.updateSnapshot()
     }
     
     func updateSnapshot() {
@@ -233,7 +228,6 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
     
 }
 
-
 extension PhotoViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
     
@@ -243,7 +237,7 @@ extension PhotoViewController: MKMapViewDelegate {
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView!.pinTintColor = .systemTeal
+            pinView!.pinTintColor = .systemIndigo
             pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
             pinView!.annotation = annotation
             pinView!.displayPriority = .required

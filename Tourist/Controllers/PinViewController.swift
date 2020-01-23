@@ -13,16 +13,12 @@ class PinViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    /// create an instance of the singleton
     var context: NSManagedObjectContext {
         return DataController.sharedInstance.viewContext
     }
     var dataController: DataController!
-    
-    ///fetch gets the data were interested into a context we can access...must be configured with a type
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var pinnedLocation: Pin!
-    
     var isCentered = false
     var centerLocation = CLLocation(latitude: 32.787663, longitude: -96.806163)
     var regionRadius: CLLocationDistance = 100000
@@ -33,15 +29,11 @@ class PinViewController: UIViewController {
         super.viewWillAppear(animated)
         
         DispatchQueue.main.async {
-            self.navigationItem.title = "Virtual Tourist"
-            let edit = UIBarButtonItem(title: "Edit" , style: .plain, target: self, action: #selector(self.edit))
-            self.navigationItem.rightBarButtonItem = edit
-            
+            self.navigationItem.title = "Pin A Place"
             if self.isCentered{
                 self.centerMapOnLocation(location: self.centerLocation)
             }
             self.setupFetchedResultsController()
-            //self.reloadInputViews()
         }
     }
         
@@ -52,8 +44,6 @@ class PinViewController: UIViewController {
         mapView.setUserTrackingMode(.follow, animated: true)
         mapView.showsUserLocation = false
         setupFetchedResultsController()
-        
-        //initialize a long press gesture recognizer
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(PinViewController.handleLongPress(_:)))
         longPressRecognizer.minimumPressDuration = 1.0
         mapView.addGestureRecognizer(longPressRecognizer)
@@ -65,31 +55,18 @@ class PinViewController: UIViewController {
         self.isCentered = false
     }
     
-    @objc func edit (){
-       
-    }
     
     @objc func handleLongPress(_ gestureRecognizer : UIGestureRecognizer){
-        /// do not generate multiple pins during long press
-        if gestureRecognizer.state != .began { return }
-        
-        /// get coordinates of the long pressed point
+        if gestureRecognizer.state != .began { return } /// do not generate multiple pins during long press
         let touchPoint = gestureRecognizer.location(in: mapView)
-        
-        /// convert location to CLLocationCorrdinate2D
         let touchMapCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
-        
-        /// generate pins
         let pin = Pin(context: context)
         pin.coordinate = touchMapCoordinate
         pin.latitude = touchMapCoordinate.latitude
         pin.longitude = touchMapCoordinate.longitude
-        
-        /// add pins to mapView
         let annotation = MKPointAnnotation()
         annotation.coordinate = pin.coordinate
         mapView.addAnnotation(annotation)
-        
         createPhotosForPin(pin: pin)
         try? context.save()
     }
@@ -102,10 +79,11 @@ class PinViewController: UIViewController {
                 pin.photos = self.configurePhotoSet(result: response.photos, pin: pin) as NSSet?
                 self.saveContext()
             } else {
-                print("Error creating photos for pin \(error?.localizedDescription)")
+                print("Error creating photos for pin")
             }
         }
     }
+    
     fileprivate func configurePhotoSet(result: FlickrPhotos, pin: Pin) -> Set<Photo>? {
     var photos = Set<Photo>()
         if result.photo.isEmpty {
@@ -132,8 +110,6 @@ class PinViewController: UIViewController {
         }
     }
         
-        
-    
    fileprivate func setupFetchedResultsController() {
        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
@@ -157,41 +133,57 @@ class PinViewController: UIViewController {
             mapView.addAnnotation(annotation)
         }
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ViewPhotos" {
             let photoVC = segue.destination as! PhotoViewController
             photoVC.dataController = dataController
             photoVC.pin = pinnedLocation
-            //guard let pinnedLocation = sender as? Pin else { return }
+            let backItem = UIBarButtonItem()
+            backItem.title = "Back To Pins"
+            navigationItem.backBarButtonItem = backItem
+            
         }
     }
 }
     // MARK: - MKMapViewDelegate
 extension PinViewController: MKMapViewDelegate {
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        /*
-        let selectedPinAnnotation = mapView.selectedAnnotations.first as? Pin
-        let pin = fetchedResultsController.fetchedObjects?.filter { $0.isEqual(selectedPinAnnotation?.coordinate)}.first
-         
-         print(selectedPinAnnotation?.coordinate ?? "no coordinate for selected pin")
-         performSegue(withIdentifier: "ViewPhotos", sender: pin)
-        */
         guard let pins = fetchedResultsController.fetchedObjects else {
             print("no fetch pins")
             return
         }
-        if let coordinate = view.annotation?.coordinate, let selectedPinAnnotation = pins.first(where: {$0.latitude == coordinate.latitude && $0.longitude == coordinate.longitude}) {
-            
-            pinnedLocation = selectedPinAnnotation
-            print("the pinnned location is")
-            print(pinnedLocation.coordinate)
-            performSegue(withIdentifier: "ViewPhotos", sender: self)
+        if let coordinate = view.annotation?.coordinate, let selectedPin = pins.first(where: {$0.latitude == coordinate.latitude && $0.longitude == coordinate.longitude}) {
+               pinnedLocation = selectedPin
+               performSegue(withIdentifier: "ViewPhotos", sender: self)
         }
     }
     
     func centerMapOnLocation(location: CLLocation) {
         let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
             mapView.setRegion(coordinateRegion, animated: true)
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = .systemIndigo
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            pinView!.annotation = annotation
+            pinView!.displayPriority = .required
+            
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
     }
 }
 
