@@ -36,20 +36,16 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
         collectionView.delegate = self
         self.navigationController?.navigationBar.tintColor = UIColor.systemIndigo
         ///TODO: test removing collcectionview data source to see if data changes when returning to the  pin view controller
-        collectionView.dataSource = self as? UICollectionViewDataSource
+        //collectionView.dataSource = self as? UICollectionViewDataSource
         setupFetchedResultsController()
         setupCollectionView()
         setupMap()
         setCollectionFlowLayout()
         reloadPin()
+        updateSnapshot()
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        mapView.delegate = self
-        setupFetchedResultsController()
-        setupMap()
-    }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -194,9 +190,11 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
             (collectionView, indexPath, photo) -> UICollectionViewCell? in
           */
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell else {fatalError("Cannot create new cell")}
-        
-            let photo = self.frc.object(at: indexPath)
+            
+            cell.activityIndicator.hidesWhenStopped = true
             cell.activityIndicator.startAnimating()
+            let photo = self.frc.object(at: indexPath)
+            
             guard let imageData = photo.image else{
                 FlickrClient.getPhoto(photo: photo) {(imageData, error) in
                     guard let imageData = imageData
@@ -206,15 +204,16 @@ class PhotoViewController: UIViewController, UICollectionViewDelegate, NSFetched
                     }
                     cell.photoView.image = UIImage(data: imageData)
                     }
-                cell.activityIndicator.stopAnimating()
+                
                 return cell
             
             }
             cell.photoView.image = UIImage(data: imageData)
             cell.activityIndicator.stopAnimating()
+            
             return cell
         })
-        self.updateSnapshot()
+        updateSnapshot()
     }
     
     func updateSnapshot() {
